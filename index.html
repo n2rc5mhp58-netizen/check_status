@@ -119,6 +119,23 @@ details .rows{padding-bottom:6px}
 details .rows .row{padding:10px 2px;border-bottom:1px solid var(--soft)}
 details .rows .row:last-child{border-bottom:0}
 
+/* как делается ролик */
+.how{margin:30px 0 0;border:1px solid var(--line);border-radius:6px;background:var(--card)}
+.how>summary{padding:13px 16px;font-weight:600;font-size:15px;border-bottom:0}
+.how[open]>summary{border-bottom:1px solid var(--line)}
+.how .steps{padding:16px 16px 18px;display:grid;gap:0}
+.step{display:grid;grid-template-columns:22px 1fr;gap:2px 12px;padding-bottom:16px;position:relative}
+.step:last-child{padding-bottom:0}
+.step .n{grid-row:1/span 3;width:22px;height:22px;border-radius:50%;border:1px solid var(--line);
+  display:flex;align-items:center;justify-content:center;background:var(--paper);
+  font:500 11px/1 var(--mono);color:var(--ink3);position:relative;z-index:1}
+.step:not(:last-child)::before{content:"";position:absolute;left:11px;top:24px;bottom:0;width:1px;background:var(--line)}
+.step .t{font-weight:600;font-size:14.5px}
+.step .d{color:var(--ink2);font-size:13.5px;margin-top:2px}
+.step .p{margin-top:6px;display:inline-block;justify-self:start;font:500 10.5px/1 var(--mono);
+  letter-spacing:.04em;text-transform:uppercase;border-radius:3px;padding:5px 7px;
+  border:1px solid var(--line);color:var(--ink3);background:var(--grey-soft)}
+
 .note-box{margin:34px 0 0;color:var(--ink2);font-size:14.5px;border-left:2px solid var(--line);padding-left:14px}
 .note-box p{margin:0 0 8px}
 .note-box p:last-child{margin:0}
@@ -175,8 +192,38 @@ footer{margin-top:36px;color:var(--ink3);font:400 12.5px/1.6 var(--mono)}
     <div id="plats"></div>
   </section>
 
+  <details class="how">
+    <summary>Как делается ролик</summary>
+    <div class="steps">
+      <div class="step"><span class="n">1</span>
+        <div class="t">Сценарий</div>
+        <div class="d">Пишем текст, проверяем каждую норму и сумму по закону, согласуем с вами.</div>
+        <span class="p">Сценарий готов</span></div>
+      <div class="step"><span class="n">2</span>
+        <div class="t">Съёмка</div>
+        <div class="d">Снимаем сразу пачку роликов за один день, чтобы не дёргать вас каждую неделю.</div>
+        <span class="p">Снят исходник</span></div>
+      <div class="step"><span class="n">3</span>
+        <div class="t">Монтаж и картинка</div>
+        <div class="d">Отбираем дубли, убираем паузы, выравниваем цвет, ставим субтитры и графику.</div>
+        <span class="p">Монтаж</span></div>
+      <div class="step"><span class="n">4</span>
+        <div class="t">Звук</div>
+        <div class="d">Чистим речь от эха кабинета, добавляем музыку, выравниваем громкость под соцсети.</div>
+        <span class="p">Монтаж</span></div>
+      <div class="step"><span class="n">5</span>
+        <div class="t">Ваш просмотр</div>
+        <div class="d">Показываем ролик целиком. Правки вносим до публикации, после — уже нет.</div>
+        <span class="p">Ждём вашего слова</span></div>
+      <div class="step"><span class="n">6</span>
+        <div class="t">Обложка и выход</div>
+        <div class="d">Собираем обложку, пишем описание, публикуем в день по плану.</div>
+        <span class="p">Вышло</span></div>
+    </div>
+  </details>
+
   <div class="note-box">
-    <p><b>Сценарий готов</b> — текст написан и проверен, ждёт съёмки. <b>Снят исходник</b> — материал отснят, стоит в очереди на монтаж. <b>Монтаж</b> — идёт сборка. <b>Ждём вашего слова</b> — собрано целиком, нужен ваш просмотр. <b>Не начато</b> — работа по этому материалу ещё не начиналась. <b>Вышло</b> — опубликовано.</p>
+    <p><b>Не начато</b> — работа по этому материалу ещё не начиналась.</p>
     <p>Во вкладке «Площадки» каждый раздел раскрывается — там видно всё поштучно, вплоть до каждой сторис.</p>
   </div>
 
