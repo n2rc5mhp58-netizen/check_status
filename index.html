@@ -161,7 +161,7 @@ footer{margin-top:36px;color:var(--ink3);font:400 12.5px/1.6 var(--mono)}
     <h2 class="sec">Ближайшие дни <span id="soonCount"></span></h2>
     <div class="rows" id="soon"></div>
 
-    <h2 class="sec">Готово, но ещё не вышло <span id="workCount"></span></h2>
+    <h2 class="sec">Отстаём по плану <span id="workCount"></span></h2>
     <div class="rows" id="work"></div>
   </section>
 
@@ -176,7 +176,7 @@ footer{margin-top:36px;color:var(--ink3);font:400 12.5px/1.6 var(--mono)}
   </section>
 
   <div class="note-box">
-    <p><b>Сценарий готов</b> — текст написан и проверен, ждёт съёмки. <b>Снят исходник</b> — материал отснят, стоит в очереди на монтаж. <b>Монтаж</b> — идёт сборка. <b>Ждём вашего слова</b> — собрано целиком, нужен ваш просмотр. <b>Ждёт выхода</b> — текст готов, публикации ещё не было. <b>Вышло</b> — опубликовано.</p>
+    <p><b>Сценарий готов</b> — текст написан и проверен, ждёт съёмки. <b>Снят исходник</b> — материал отснят, стоит в очереди на монтаж. <b>Монтаж</b> — идёт сборка. <b>Ждём вашего слова</b> — собрано целиком, нужен ваш просмотр. <b>Не начато</b> — работа по этому материалу ещё не начиналась. <b>Вышло</b> — опубликовано.</p>
     <p>Во вкладке «Площадки» каждый раздел раскрывается — там видно всё поштучно, вплоть до каждой сторис.</p>
   </div>
 
@@ -264,7 +264,7 @@ footer{margin-top:36px;color:var(--ink3);font:400 12.5px/1.6 var(--mono)}
       all.push({
         type:x.type, title:x.title, date:x.date, time:x.time, note:x.note,
         state: x.done ? 'done' : 'soon',
-        stateLabel: x.done ? 'Вышло' : 'Ждёт выхода'
+        stateLabel: x.done ? 'Вышло' : 'Не начато'
       });
     });
 
@@ -316,7 +316,7 @@ footer{margin-top:36px;color:var(--ink3);font:400 12.5px/1.6 var(--mono)}
 
     fill(document.getElementById('recent'), recent, 'За последнюю неделю ничего не выходило.');
     fill(document.getElementById('soon'), soon, 'На ближайшую неделю публикаций нет.');
-    fill(document.getElementById('work'), work, 'Всё готовое уже вышло.');
+    fill(document.getElementById('work'), work, 'По плану отставания нет.');
     document.getElementById('doneCount').textContent = recent.length + ' ' + plural(recent.length,'штука','штуки','штук');
     document.getElementById('soonCount').textContent = soon.length + ' ' + plural(soon.length,'штука','штуки','штук');
     document.getElementById('workCount').textContent = work.length + ' ' + plural(work.length,'штука','штуки','штук');
