@@ -119,8 +119,11 @@ footer{margin-top:40px;color:var(--ink3);font:400 12.5px/1.6 var(--mono)}
   <h2 class="sec">Ролики месяца <span id="count"></span></h2>
   <div class="rows" id="rows"></div>
 
+  <h2 class="sec" id="ksec" hidden>Карусели <span id="kcount"></span></h2>
+  <div class="rows" id="krows"></div>
+
   <div class="note-box">
-    <p><b>Сценарий готов</b> — текст написан и проверен, ролик ждёт съёмки. <b>Монтаж</b> — материал снят, идёт сборка. <b>Ждём вашего слова</b> — ролик собран целиком, нужен ваш просмотр. <b>Принято</b> — ролик утверждён и ждёт дня выхода.</p>
+    <p><b>Сценарий готов</b> — текст написан и проверен, ролик ждёт съёмки. <b>Монтаж</b> — материал снят, идёт сборка. <b>Ждём вашего слова</b> — ролик собран целиком, нужен ваш просмотр. <b>Принято</b> — ролик утверждён и ждёт дня выхода. <b>Опубликовано</b> — вышел в ленте.</p>
     <p>Порядок роликов — тот же, что в плане месяца. Ролики выходят по мере готовности.</p>
   </div>
 
@@ -139,7 +142,6 @@ footer{margin-top:40px;color:var(--ink3);font:400 12.5px/1.6 var(--mono)}
     var items = d.items.slice();
 
     document.getElementById('stamp').textContent = 'Обновлено ' + fmt(d.updated);
-    document.getElementById('count').textContent = items.length + ' шт.';
     document.getElementById('foot').textContent = d.project + ' · ' + d.month + ' · страница ведётся автоматически';
 
     // счётчики
@@ -183,9 +185,11 @@ footer{margin-top:40px;color:var(--ink3);font:400 12.5px/1.6 var(--mono)}
 
     // строки
     var rows = document.getElementById('rows');
+    var krows = document.getElementById('krows');
+    var nR = 0, nK = 0;
     items.forEach(function(i){
       var r = el('div','row'); r.dataset.k = i.stage;
-      r.appendChild(el('div','num', String(i.n)));
+      r.appendChild(el('div','num', i.kind === 'karusel' ? '' : String(i.n)));
       var b = el('div','body');
       b.appendChild(el('div','ttl', i.title));
       b.appendChild(el('div','hook', i.hook));
@@ -196,8 +200,15 @@ footer{margin-top:40px;color:var(--ink3);font:400 12.5px/1.6 var(--mono)}
       m.appendChild(el('span',null,i.who));
       m.appendChild(el('span',null,i.len));
       r.appendChild(m);
-      rows.appendChild(r);
+      if(i.kind === 'karusel'){ krows.appendChild(r); nK++; }
+      else { rows.appendChild(r); nR++; }
     });
+
+    document.getElementById('count').textContent = nR + ' шт.';
+    if(nK){
+      document.getElementById('ksec').hidden = false;
+      document.getElementById('kcount').textContent = nK + ' шт.';
+    }
   }
 
   function toggle(k){
@@ -205,12 +216,15 @@ footer{margin-top:40px;color:var(--ink3);font:400 12.5px/1.6 var(--mono)}
     document.querySelectorAll('.chip').forEach(function(c){
       c.setAttribute('aria-pressed', c.dataset.k === filter ? 'true' : 'false');
     });
-    var shown = 0;
-    document.querySelectorAll('.row').forEach(function(r){
-      var on = !filter || r.dataset.k === filter;
-      r.hidden = !on; if(on) shown++;
+    ['rows','krows'].forEach(function(id, idx){
+      var shown = 0;
+      document.querySelectorAll('#' + id + ' .row').forEach(function(r){
+        var on = !filter || r.dataset.k === filter;
+        r.hidden = !on; if(on) shown++;
+      });
+      document.getElementById(idx ? 'kcount' : 'count').textContent = shown + ' шт.';
+      if(idx) document.getElementById('ksec').hidden = shown === 0;
     });
-    document.getElementById('count').textContent = shown + ' шт.';
   }
 
   function fmt(iso){
