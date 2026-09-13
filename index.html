@@ -161,7 +161,7 @@ footer{margin-top:36px;color:var(--ink3);font:400 12.5px/1.6 var(--mono)}
     <h2 class="sec">Ближайшие дни <span id="soonCount"></span></h2>
     <div class="rows" id="soon"></div>
 
-    <h2 class="sec">На монтаже и на вашем просмотре <span id="workCount"></span></h2>
+    <h2 class="sec">Готово, но ещё не вышло <span id="workCount"></span></h2>
     <div class="rows" id="work"></div>
   </section>
 
@@ -176,7 +176,7 @@ footer{margin-top:36px;color:var(--ink3);font:400 12.5px/1.6 var(--mono)}
   </section>
 
   <div class="note-box">
-    <p><b>Сценарий готов</b> — текст написан и проверен, ждёт съёмки. <b>Снят исходник</b> — материал отснят, стоит в очереди на монтаж. <b>Монтаж</b> — идёт сборка. <b>Ждём вашего слова</b> — собрано целиком, нужен ваш просмотр. <b>Вышло</b> — опубликовано.</p>
+    <p><b>Сценарий готов</b> — текст написан и проверен, ждёт съёмки. <b>Снят исходник</b> — материал отснят, стоит в очереди на монтаж. <b>Монтаж</b> — идёт сборка. <b>Ждём вашего слова</b> — собрано целиком, нужен ваш просмотр. <b>Ждёт выхода</b> — текст готов, публикации ещё не было. <b>Вышло</b> — опубликовано.</p>
     <p>Во вкладке «Площадки» каждый раздел раскрывается — там видно всё поштучно, вплоть до каждой сторис.</p>
   </div>
 
@@ -261,11 +261,10 @@ footer{margin-top:36px;color:var(--ink3);font:400 12.5px/1.6 var(--mono)}
     });
 
     c.items.forEach(function(x){
-      var done = x.date && x.date <= today;
       all.push({
         type:x.type, title:x.title, date:x.date, time:x.time, note:x.note,
-        state: done ? 'done' : 'soon',
-        stateLabel: done ? 'Вышло' : (x.date ? 'По плану' : 'В работе')
+        state: x.done ? 'done' : 'soon',
+        stateLabel: x.done ? 'Вышло' : 'Ждёт выхода'
       });
     });
 
@@ -310,11 +309,14 @@ footer{margin-top:36px;color:var(--ink3);font:400 12.5px/1.6 var(--mono)}
                     .sort(function(a,b){ return a.date < b.date ? 1 : -1; });
     var soon = all.filter(function(i){ return i.date && i.date > today && i.date <= ahead; })
                   .sort(function(a,b){ return a.date > b.date ? 1 : -1; });
-    var work = all.filter(function(i){ return i.state==='edit'||i.state==='review'; });
+    var work = all.filter(function(i){
+      if(i.state==='edit'||i.state==='review') return true;
+      return i.state==='soon' && i.date && i.date <= today;
+    }).sort(function(a,b){ return (a.date||'') > (b.date||'') ? 1 : -1; });
 
     fill(document.getElementById('recent'), recent, 'За последнюю неделю ничего не выходило.');
     fill(document.getElementById('soon'), soon, 'На ближайшую неделю публикаций нет.');
-    fill(document.getElementById('work'), work, 'Ничего не ждёт вашего просмотра.');
+    fill(document.getElementById('work'), work, 'Всё готовое уже вышло.');
     document.getElementById('doneCount').textContent = recent.length + ' ' + plural(recent.length,'штука','штуки','штук');
     document.getElementById('soonCount').textContent = soon.length + ' ' + plural(soon.length,'штука','штуки','штук');
     document.getElementById('workCount').textContent = work.length + ' ' + plural(work.length,'штука','штуки','штук');
