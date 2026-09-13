@@ -1,0 +1,230 @@
+<title>Право выбора · производство</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Unbounded:wght@600;700&family=Martian+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --paper:#F4F5F2; --card:#FFFFFF; --line:#D8DBD3; --soft:#E9EBE5;
+  --ink:#14171C; --ink2:#4A5058; --ink3:#7C838C;
+  --teal:#14505C; --teal-soft:#DCEAEC;
+  --amber:#C97E1E; --amber-line:#E9A34B; --amber-soft:#FBEFD9;
+  --green:#3F6B48; --green-soft:#DDE9DE;
+  --grey:#7C838C; --grey-soft:#E9EBE5;
+  --display:'Unbounded','Onest',system-ui,sans-serif;
+  --body:'Onest','Helvetica Neue',Arial,sans-serif;
+  --mono:'Martian Mono',ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#101317; --card:#1A1E24; --line:#2E343C; --soft:#232830;
+  --ink:#ECEEE9; --ink2:#B6BCC3; --ink3:#848B94;
+  --teal:#7FBCC7; --teal-soft:#1B333A;
+  --amber:#E9A34B; --amber-line:#E9A34B; --amber-soft:#382C18;
+  --green:#8FB795; --green-soft:#1E2C21;
+  --grey:#848B94; --grey-soft:#232830;
+}}
+:root[data-theme="dark"]{
+  --paper:#101317; --card:#1A1E24; --line:#2E343C; --soft:#232830;
+  --ink:#ECEEE9; --ink2:#B6BCC3; --ink3:#848B94;
+  --teal:#7FBCC7; --teal-soft:#1B333A;
+  --amber:#E9A34B; --amber-line:#E9A34B; --amber-soft:#382C18;
+  --green:#8FB795; --green-soft:#1E2C21;
+  --grey:#848B94; --grey-soft:#232830;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font:400 16px/1.5 var(--body);-webkit-font-smoothing:antialiased}
+.wrap{max-width:780px;margin:0 auto;padding-block:34px 72px;padding-left:18px;padding-right:18px}
+
+.eyebrow{font:500 11px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);margin:0 0 14px}
+h1{font:700 clamp(26px,5.4vw,36px)/1.1 var(--display);letter-spacing:-.02em;margin:0 0 10px;text-wrap:balance}
+.lede{color:var(--ink2);max-width:58ch;margin:0 0 4px}
+.stamp{font:400 12.5px/1 var(--mono);color:var(--ink3);margin:14px 0 0}
+
+/* полоса прогресса */
+.meter{margin:28px 0 10px}
+.bar{display:flex;height:12px;border-radius:2px;overflow:hidden;background:var(--soft);gap:2px}
+.bar i{display:block}
+.bar i.s-plan{background:var(--grey);opacity:.45}
+.bar i.s-shot,.bar i.s-edit{background:var(--teal)}
+.bar i.s-review{background:var(--amber-line)}
+.bar i.s-accepted,.bar i.s-published{background:var(--green)}
+.legend{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0 0;padding:0;list-style:none}
+.chip{appearance:none;font:500 13px/1 var(--body);color:var(--ink2);background:var(--card);
+  border:1px solid var(--line);border-radius:999px;padding:7px 12px;cursor:pointer;display:flex;gap:7px;align-items:center}
+.chip b{font:500 12px/1 var(--mono);color:var(--ink3);font-variant-numeric:tabular-nums}
+.chip .dot{width:8px;height:8px;border-radius:50%;background:var(--grey)}
+.chip[data-k="review"] .dot{background:var(--amber-line)}
+.chip[data-k="edit"] .dot,.chip[data-k="shot"] .dot{background:var(--teal)}
+.chip[data-k="accepted"] .dot,.chip[data-k="published"] .dot{background:var(--green)}
+.chip[aria-pressed="true"]{border-color:var(--ink);color:var(--ink);background:var(--soft)}
+.chip:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+
+/* блок «ждём от вас» */
+.ask{margin:34px 0 0;border:1px solid var(--amber-line);border-radius:6px;background:var(--amber-soft);padding:16px 18px}
+.ask h2{font:600 15px/1.2 var(--body);letter-spacing:.01em;margin:0 0 12px;color:var(--ink)}
+.ask ul{margin:0;padding:0;list-style:none;display:grid;gap:11px}
+.ask li{display:grid;gap:2px}
+.ask .w{font-weight:600}
+.ask .y{color:var(--ink2);font-size:14.5px}
+.ask .who{font:400 11px/1 var(--mono);letter-spacing:.05em;text-transform:uppercase;color:var(--amber)}
+
+h2.sec{font:600 15px/1.2 var(--body);margin:42px 0 12px;color:var(--ink2);
+  border-bottom:1px solid var(--line);padding-bottom:9px;display:flex;justify-content:space-between;gap:10px;align-items:baseline}
+h2.sec span{font:400 12px/1 var(--mono);color:var(--ink3);font-variant-numeric:tabular-nums}
+
+/* список роликов */
+.rows{display:grid;gap:0}
+.row{display:grid;grid-template-columns:34px 1fr auto;gap:4px 14px;padding:15px 2px;border-bottom:1px solid var(--line);align-items:baseline}
+.row .num{font:500 14px/1.3 var(--mono);color:var(--ink3);font-variant-numeric:tabular-nums}
+.row .body .ttl{font-weight:600;letter-spacing:-.005em}
+.row .body .hook{color:var(--ink2);font-size:14.5px;margin-top:2px}
+.row .body .note{color:var(--ink3);font-size:13.5px;margin-top:6px}
+.row .meta{grid-column:2;display:flex;flex-wrap:wrap;gap:4px 12px;margin-top:7px;
+  font:400 11.5px/1 var(--mono);letter-spacing:.03em;color:var(--ink3);text-transform:uppercase}
+.pill{justify-self:end;white-space:nowrap;font:500 11.5px/1 var(--mono);letter-spacing:.04em;text-transform:uppercase;
+  border-radius:3px;padding:6px 9px;border:1px solid var(--line);color:var(--ink2);background:var(--grey-soft)}
+.pill.s-review{border-color:var(--amber-line);background:var(--amber-soft);color:var(--amber)}
+.pill.s-edit,.pill.s-shot{border-color:var(--teal);background:var(--teal-soft);color:var(--teal)}
+.pill.s-accepted,.pill.s-published{border-color:var(--green);background:var(--green-soft);color:var(--green)}
+.row[hidden]{display:none}
+
+.note-box{margin:38px 0 0;color:var(--ink2);font-size:14.5px;border-left:2px solid var(--line);padding-left:14px}
+.note-box p{margin:0 0 8px}
+.note-box p:last-child{margin:0}
+footer{margin-top:40px;color:var(--ink3);font:400 12.5px/1.6 var(--mono)}
+
+@media(max-width:560px){
+  .row{grid-template-columns:30px 1fr;gap:3px 10px}
+  .pill{grid-column:2;justify-self:start;margin-top:9px}
+  .row .meta{margin-top:6px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<div class="wrap">
+  <p class="eyebrow">Право выбора · сентябрь 2026</p>
+  <h1>Что сделано и что в работе</h1>
+  <p class="lede">Страница обновляется сама. Открывайте в любой момент — здесь всегда текущее состояние по каждому ролику месяца.</p>
+  <p class="stamp" id="stamp">Загружаем…</p>
+
+  <div class="meter">
+    <div class="bar" id="bar"></div>
+    <ul class="legend" id="legend"></ul>
+  </div>
+
+  <section class="ask" id="ask" hidden>
+    <h2>Ждём от вас</h2>
+    <ul id="asklist"></ul>
+  </section>
+
+  <h2 class="sec">Ролики месяца <span id="count"></span></h2>
+  <div class="rows" id="rows"></div>
+
+  <div class="note-box">
+    <p><b>Сценарий готов</b> — текст написан и проверен, ролик ждёт съёмки. <b>Монтаж</b> — материал снят, идёт сборка. <b>Ждём вашего слова</b> — ролик собран целиком, нужен ваш просмотр. <b>Принято</b> — ролик утверждён и ждёт дня выхода.</p>
+    <p>Порядок роликов — тот же, что в плане месяца. Ролики выходят по мере готовности.</p>
+  </div>
+
+  <footer id="foot"></footer>
+</div>
+
+<script>
+(function(){
+  var STAGE_ORDER = ['plan','shot','edit','review','accepted','published'];
+  var filter = null;
+
+  function el(tag, cls, txt){ var n=document.createElement(tag); if(cls)n.className=cls; if(txt!=null)n.textContent=txt; return n; }
+
+  function render(d){
+    var labels = {}; d.stages.forEach(function(s){ labels[s.key]=s.label; });
+    var items = d.items.slice();
+
+    document.getElementById('stamp').textContent = 'Обновлено ' + fmt(d.updated);
+    document.getElementById('count').textContent = items.length + ' шт.';
+    document.getElementById('foot').textContent = d.project + ' · ' + d.month + ' · страница ведётся автоматически';
+
+    // счётчики
+    var counts = {};
+    items.forEach(function(i){ counts[i.stage]=(counts[i.stage]||0)+1; });
+
+    var bar = document.getElementById('bar');
+    var legend = document.getElementById('legend');
+    bar.textContent=''; legend.textContent='';
+
+    STAGE_ORDER.forEach(function(k){
+      if(!counts[k]) return;
+      var seg = el('i','s-'+k);
+      seg.style.flex = counts[k];
+      seg.title = labels[k] + ': ' + counts[k];
+      bar.appendChild(seg);
+
+      var li = el('li');
+      var b = el('button','chip');
+      b.type='button'; b.dataset.k=k; b.setAttribute('aria-pressed','false');
+      b.appendChild(el('span','dot'));
+      b.appendChild(document.createTextNode(labels[k]));
+      b.appendChild(el('b', null, String(counts[k])));
+      b.addEventListener('click', function(){ toggle(k); });
+      li.appendChild(b); legend.appendChild(li);
+    });
+
+    // ждём от вас
+    if(d.waiting && d.waiting.length){
+      var ask = document.getElementById('ask');
+      var list = document.getElementById('asklist');
+      d.waiting.forEach(function(w){
+        var li = el('li');
+        li.appendChild(el('div','w', w.what));
+        li.appendChild(el('div','y', w.why));
+        li.appendChild(el('div','who', w.who));
+        list.appendChild(li);
+      });
+      ask.hidden = false;
+    }
+
+    // строки
+    var rows = document.getElementById('rows');
+    items.forEach(function(i){
+      var r = el('div','row'); r.dataset.k = i.stage;
+      r.appendChild(el('div','num', String(i.n)));
+      var b = el('div','body');
+      b.appendChild(el('div','ttl', i.title));
+      b.appendChild(el('div','hook', i.hook));
+      if(i.note) b.appendChild(el('div','note', i.note));
+      r.appendChild(b);
+      r.appendChild(el('div','pill s-'+i.stage, labels[i.stage]));
+      var m = el('div','meta');
+      m.appendChild(el('span',null,i.who));
+      m.appendChild(el('span',null,i.len));
+      r.appendChild(m);
+      rows.appendChild(r);
+    });
+  }
+
+  function toggle(k){
+    filter = (filter === k) ? null : k;
+    document.querySelectorAll('.chip').forEach(function(c){
+      c.setAttribute('aria-pressed', c.dataset.k === filter ? 'true' : 'false');
+    });
+    var shown = 0;
+    document.querySelectorAll('.row').forEach(function(r){
+      var on = !filter || r.dataset.k === filter;
+      r.hidden = !on; if(on) shown++;
+    });
+    document.getElementById('count').textContent = shown + ' шт.';
+  }
+
+  function fmt(iso){
+    var m = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
+    var p = String(iso).split('-');
+    if(p.length !== 3) return iso;
+    return Number(p[2]) + ' ' + m[Number(p[1])-1];
+  }
+
+  fetch('data.json', {cache:'no-store'})
+    .then(function(r){ return r.json(); })
+    .then(render)
+    .catch(function(){
+      document.getElementById('stamp').textContent = 'Не удалось загрузить данные. Обновите страницу через минуту.';
+    });
+})();
+</script>
