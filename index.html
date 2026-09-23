@@ -81,6 +81,17 @@ details[open]>summary .chev{transform:rotate(180deg)}
 .pill.ok{background:var(--accent);border-color:var(--accent);color:var(--bg)}
 .pnote{font-size:13px;color:var(--muted);margin-top:4px}
 
+.tabs{display:flex;gap:24px;border-bottom:1px solid var(--line);margin:0 0 16px}
+.tabs button{appearance:none;background:none;border:0;padding:8px 0 10px;margin-bottom:-1px;font:inherit;font-size:15px;font-weight:600;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent}
+.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+.panel[hidden]{display:none}
+.done-list{list-style:none;margin:0;padding:0;background:var(--card);border:1px solid var(--line);border-radius:16px}
+.done-item{display:flex;gap:14px;align-items:flex-start;padding:14px 16px;border-bottom:1px solid var(--line)}
+.done-item:last-child{border-bottom:0}
+.num{flex:none;min-width:44px;font:600 22px/1.1 "Unbounded","Onest",system-ui,sans-serif;color:var(--accent)}
+.num.ok{font-size:18px}
+.dtitle{font-weight:600}
+.ddetail{display:block;font-size:14px;color:var(--muted);margin-top:2px}
 footer{margin-top:28px;font-size:13px;color:var(--muted)}
 .err{padding:16px;border:1px dashed var(--line);border-radius:12px;color:var(--muted)}
 </style>
@@ -88,12 +99,21 @@ footer{margin-top:28px;font-size:13px;color:var(--muted)}
 <body>
 <div class="wrap">
   <header>
-    <h1>Право выбора · что сейчас в работе</h1>
+    <h1>Право выбора · контент</h1>
     <p class="upd" id="upd">&nbsp;</p>
   </header>
-  <h2>Ключевые задачи</h2>
-  <div id="tasks"></div>
-  <footer>Нажмите на задачу, чтобы увидеть все этапы. Время указано по Иркутску.</footer>
+  <nav class="tabs" role="tablist">
+    <button role="tab" id="t-now" aria-selected="true" data-tab="now">Сейчас в работе</button>
+    <button role="tab" id="t-done" aria-selected="false" data-tab="done">Сделано</button>
+  </nav>
+  <section class="panel" id="p-now" role="tabpanel">
+    <div id="tasks"></div>
+    <footer>Нажмите на задачу, чтобы увидеть все этапы. Время указано по Иркутску.</footer>
+  </section>
+  <section class="panel" id="p-done" role="tabpanel" hidden>
+    <h2 id="done-h"></h2>
+    <ul class="done-list" id="done"></ul>
+  </section>
 </div>
 <script>
 const TZ = 'Asia/Irkutsk';
@@ -161,10 +181,26 @@ function taskHTML(t){
     <div class="meta"><span class="due">Будет готово: ${when(t.due)}</span>${pub}</div>
   </summary>${body}</details>`;
 }
+function doneHTML(x){
+  const num = x.count!=null ? `<span class="num">${esc(x.count)}</span>` : '<span class="num ok">✓</span>';
+  return `<li class="done-item">${num}<div><span class="dtitle">${esc(x.title)}</span>${x.detail?`<span class="ddetail">${esc(x.detail)}</span>`:''}</div></li>`;
+}
+function showTab(k){
+  for(const b of document.querySelectorAll('.tabs button')) b.setAttribute('aria-selected', b.dataset.tab===k);
+  document.getElementById('p-now').hidden = k!=='now';
+  document.getElementById('p-done').hidden = k!=='done';
+  try{ history.replaceState(null,'', k==='done'?'#sdelano':location.pathname); }catch(e){}
+}
+document.querySelectorAll('.tabs button').forEach(b=>b.addEventListener('click',()=>showTab(b.dataset.tab)));
+if(location.hash==='#sdelano') showTab('done');
 function render(data){
   const u = new Date(data.updated);
   document.getElementById('upd').textContent = `Обновлено ${dm(u)}, ${hm(u)} (по Иркутску)`;
   document.getElementById('tasks').innerHTML = data.tasks.map(taskHTML).join('');
+  const D = data.done;
+  if(D){ document.getElementById('done-h').textContent = D.title;
+    document.getElementById('done').innerHTML = D.items.map(doneHTML).join(''); }
+  else document.getElementById('t-done').hidden = true;
 }
 if(window.__DATA__) render(window.__DATA__);
 else fetch('tasks.json',{cache:'no-store'}).then(r=>r.json()).then(render)
