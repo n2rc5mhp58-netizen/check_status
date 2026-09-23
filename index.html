@@ -39,6 +39,7 @@ h2{font-size:15px;font-weight:600;color:var(--muted);margin:0 0 10px}
 details[open]>summary .chev{transform:rotate(180deg)}
 .now-line{margin:6px 0 10px;font-size:15px}
 .now-line b{font-weight:600}
+.tnote{font-size:13px;color:var(--muted);margin:-6px 0 10px 16px}
 .dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--now);margin-right:8px;vertical-align:1px}
 .bar{height:6px;border-radius:3px;background:var(--track);overflow:hidden}
 .bar i{display:block;height:100%;background:var(--accent);border-radius:3px}
@@ -211,7 +212,7 @@ function taskHTML(t){
   const pub = t.publish ? `<span>Выход: ${when(t.publish)} (${hmMsk(new Date(t.publish))} МСК)</span>` : '';
   return `<details class="task"><summary>
     <div class="row"><span class="title">${esc(t.title)}</span><span class="chev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span></div>
-    <div class="now-line">${nowText}</div>
+    <div class="now-line">${nowText}</div>${t.note?`<div class="tnote">${esc(t.note)}</div>`:''}
     <div class="bar" role="progressbar" aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100"><i style="width:${Math.max(pct,2)}%"></i></div>
     <div class="meta"><span class="due">Будет готово: ${when(t.due)}</span>${pub}</div>
   </summary>${body}</details>`;
