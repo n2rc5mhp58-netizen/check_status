@@ -81,8 +81,8 @@ details[open]>summary .chev{transform:rotate(180deg)}
 .pill.ok{background:var(--accent);border-color:var(--accent);color:var(--bg)}
 .pnote{font-size:13px;color:var(--muted);margin-top:4px}
 
-.tabs{display:flex;gap:18px;border-bottom:1px solid var(--line);margin:0 0 16px;overflow-x:auto;scrollbar-width:none}
-.tabs button{appearance:none;background:none;border:0;padding:8px 0 10px;margin-bottom:-1px;font:inherit;font-size:14px;font-weight:600;white-space:nowrap;flex:none;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent}
+.tabs{display:flex;flex-wrap:wrap;column-gap:14px;border-bottom:1px solid var(--line);margin:0 0 16px}
+.tabs button{appearance:none;background:none;border:0;padding:8px 0 10px;margin-bottom:-1px;font:inherit;font-size:13.5px;font-weight:600;white-space:nowrap;flex:none;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent}
 .tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
 .panel[hidden]{display:none}
 .done-list{list-style:none;margin:0;padding:0;background:var(--card);border:1px solid var(--line);border-radius:16px}
@@ -106,6 +106,17 @@ details[open]>summary .chev{transform:rotate(180deg)}
 .who{flex:none;font-size:13px;font-weight:600;color:var(--muted);white-space:nowrap}
 .legend{display:flex;gap:16px;font-size:13px;color:var(--muted);margin:0 0 12px}
 .legend i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:1px}
+.an-card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 16px;margin:0 0 12px}
+.an-top{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.an-name{font-weight:600}
+.an-f{font:600 22px/1.1 "Unbounded","Onest",system-ui,sans-serif;color:var(--accent);white-space:nowrap}
+.an-sub{display:flex;justify-content:space-between;gap:12px;font-size:13px;color:var(--muted);margin-top:2px}
+.an-d.up{color:#1D6449}.an-d.down{color:#B2262C}
+.an-last{margin-top:10px;padding-top:10px;border-top:1px solid var(--line);font-size:14px}
+.an-last a{color:var(--ink)}
+.an-stats{display:flex;flex-wrap:wrap;gap:4px 16px;white-space:nowrap;margin-top:4px;color:var(--muted);font-size:13px}
+.an-stats b{color:var(--ink);font-weight:600}
+.an-na{color:var(--muted);font-size:14px}
 footer{margin-top:28px;font-size:13px;color:var(--muted)}
 .err{padding:16px;border:1px dashed var(--line);border-radius:12px;color:var(--muted)}
 </style>
@@ -120,6 +131,7 @@ footer{margin-top:28px;font-size:13px;color:var(--muted)}
     <button role="tab" id="t-now" aria-selected="true" data-tab="now">В работе</button>
     <button role="tab" id="t-done" aria-selected="false" data-tab="done">Сделано</button>
     <button role="tab" id="t-roles" aria-selected="false" data-tab="roles">Кто что делает</button>
+    <button role="tab" id="t-an" aria-selected="false" data-tab="an">Аналитика</button>
   </nav>
   <section class="panel" id="p-now" role="tabpanel">
     <div id="tasks"></div>
@@ -131,6 +143,11 @@ footer{margin-top:28px;font-size:13px;color:var(--muted)}
   </section>
   <section class="panel" id="p-roles" role="tabpanel" hidden>
     <div id="roles"></div>
+  </section>
+  <section class="panel" id="p-an" role="tabpanel" hidden>
+    <p class="upd" id="an-upd">Загружаю…</p>
+    <div id="an"></div>
+    <footer>Цифры снимаются каждое утро. Изменение — к прошлому снимку.</footer>
   </section>
 </div>
 <script>
@@ -208,12 +225,14 @@ function showTab(k){
   document.getElementById('p-now').hidden = k!=='now';
   document.getElementById('p-done').hidden = k!=='done';
   document.getElementById('p-roles').hidden = k!=='roles';
-  const hs={done:'#sdelano',roles:'#kto'};
+  document.getElementById('p-an').hidden = k!=='an';
+  const hs={done:'#sdelano',roles:'#kto',an:'#analitika'};
   try{ history.replaceState(null,'', hs[k]||location.pathname); }catch(e){}
 }
 document.querySelectorAll('.tabs button').forEach(b=>b.addEventListener('click',()=>showTab(b.dataset.tab)));
 if(location.hash==='#sdelano') showTab('done');
 if(location.hash==='#kto') showTab('roles');
+if(location.hash==='#analitika') showTab('an');
 function render(data){
   const u = new Date(data.updated);
   document.getElementById('upd').textContent = `Обновлено ${dm(u)}, ${hm(u)} (по Иркутску)`;
@@ -228,6 +247,29 @@ function render(data){
     R.chains.map(c=>`<div class="chain"><h3>${esc(c.title)}</h3><ul class="clist">${c.steps.map(s=>`<li class="${s.cls}"><span>${esc(s.name)}</span><span class="who">${esc(s.who)}</span></li>`).join('')}</ul></div>`).join(''); }
   else document.getElementById('t-roles').hidden = true;
 }
+const nf = n => n==null ? '—' : Number(n).toLocaleString('ru-RU');
+function anCard(p){
+  let d='';
+  if(p.followers!=null && p.followers_prev!=null){ const x=p.followers-p.followers_prev;
+    d = x>0?`<span class="an-d up">+${nf(x)} за сутки</span>`: x<0?`<span class="an-d down">−${nf(-x)} за сутки</span>`:'<span class="an-d">без изменений</span>'; }
+  const top = p.followers==null
+    ? `<div class="an-top"><span class="an-name">${esc(p.name)}</span><span class="an-na">${esc(p.note||'нет данных')}</span></div>`
+    : `<div class="an-top"><span class="an-name">${esc(p.name)}</span><span class="an-f">${nf(p.followers)}</span></div><div class="an-sub"><span>${esc(p.unit||'подписчиков')}</span>${d}</div>`;
+  let last='';
+  if(p.last){ const L=p.last; const t=L.title?`«${esc(L.title)}»`:'Последний ролик';
+    const name=L.url?`<a href="${esc(L.url)}" target="_blank" rel="noopener">${t}</a>`:t;
+    const st=[['просмотры',L.views],['лайки',L.likes],['комментарии',L.comments]].filter(x=>x[1]!=null).map(x=>`<span>${x[0]} <b>${nf(x[1])}</b></span>`).join('');
+    last=`<div class="an-last">${name}${L.date?` · ${esc(dm(new Date(L.date+'T12:00:00+08:00')))}`:''}<div class="an-stats">${st||'<span>цифр под роликом нет</span>'}</div></div>`; }
+  return `<div class="an-card">${top}${last}</div>`;
+}
+function renderAn(a){
+  const u=new Date(a.updated);
+  document.getElementById('an-upd').textContent=`Обновлено ${dm(u)}, ${hm(u)} (по Иркутску)`;
+  document.getElementById('an').innerHTML=a.platforms.map(anCard).join('');
+}
+if(window.__AN__) renderAn(window.__AN__);
+else fetch('analytics.json',{cache:'no-store'}).then(r=>r.json()).then(renderAn)
+  .catch(()=>{document.getElementById('t-an').hidden=true;});
 if(window.__DATA__) render(window.__DATA__);
 else fetch('tasks.json',{cache:'no-store'}).then(r=>r.json()).then(render)
   .catch(()=>{document.getElementById('tasks').innerHTML='<div class="err">Не удалось загрузить данные. Обновите страницу.</div>';});
