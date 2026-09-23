@@ -81,8 +81,8 @@ details[open]>summary .chev{transform:rotate(180deg)}
 .pill.ok{background:var(--accent);border-color:var(--accent);color:var(--bg)}
 .pnote{font-size:13px;color:var(--muted);margin-top:4px}
 
-.tabs{display:flex;gap:24px;border-bottom:1px solid var(--line);margin:0 0 16px}
-.tabs button{appearance:none;background:none;border:0;padding:8px 0 10px;margin-bottom:-1px;font:inherit;font-size:15px;font-weight:600;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent}
+.tabs{display:flex;gap:18px;border-bottom:1px solid var(--line);margin:0 0 16px;overflow-x:auto;scrollbar-width:none}
+.tabs button{appearance:none;background:none;border:0;padding:8px 0 10px;margin-bottom:-1px;font:inherit;font-size:14px;font-weight:600;white-space:nowrap;flex:none;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent}
 .tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
 .panel[hidden]{display:none}
 .done-list{list-style:none;margin:0;padding:0;background:var(--card);border:1px solid var(--line);border-radius:16px}
@@ -92,6 +92,20 @@ details[open]>summary .chev{transform:rotate(180deg)}
 .num.ok{font-size:18px}
 .dtitle{font-weight:600}
 .ddetail{display:block;font-size:14px;color:var(--muted);margin-top:2px}
+.chain{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 16px;margin:0 0 12px}
+.chain h3{font-size:16px;font-weight:600;margin:0 0 6px}
+.clist{list-style:none;margin:0;padding:0}
+.clist li{position:relative;display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:7px 0 7px 22px}
+.clist li:before{content:"";position:absolute;left:4px;top:15px;width:8px;height:8px;border-radius:50%;background:var(--line)}
+.clist li:after{content:"";position:absolute;left:7px;top:25px;bottom:-9px;width:2px;background:var(--line)}
+.clist li:last-child:after{display:none}
+.clist li.me:before{background:var(--now)}
+.clist li.ai:before{background:var(--accent)}
+.clist li.both:before{background:linear-gradient(90deg,var(--accent) 50%,var(--now) 50%)}
+.clist li>span:first-child{flex:1;min-width:0}
+.who{flex:none;font-size:13px;font-weight:600;color:var(--muted);white-space:nowrap}
+.legend{display:flex;gap:16px;font-size:13px;color:var(--muted);margin:0 0 12px}
+.legend i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:1px}
 footer{margin-top:28px;font-size:13px;color:var(--muted)}
 .err{padding:16px;border:1px dashed var(--line);border-radius:12px;color:var(--muted)}
 </style>
@@ -103,8 +117,9 @@ footer{margin-top:28px;font-size:13px;color:var(--muted)}
     <p class="upd" id="upd">&nbsp;</p>
   </header>
   <nav class="tabs" role="tablist">
-    <button role="tab" id="t-now" aria-selected="true" data-tab="now">Сейчас в работе</button>
+    <button role="tab" id="t-now" aria-selected="true" data-tab="now">В работе</button>
     <button role="tab" id="t-done" aria-selected="false" data-tab="done">Сделано</button>
+    <button role="tab" id="t-roles" aria-selected="false" data-tab="roles">Кто что делает</button>
   </nav>
   <section class="panel" id="p-now" role="tabpanel">
     <div id="tasks"></div>
@@ -113,6 +128,9 @@ footer{margin-top:28px;font-size:13px;color:var(--muted)}
   <section class="panel" id="p-done" role="tabpanel" hidden>
     <h2 id="done-h"></h2>
     <ul class="done-list" id="done"></ul>
+  </section>
+  <section class="panel" id="p-roles" role="tabpanel" hidden>
+    <div id="roles"></div>
   </section>
 </div>
 <script>
@@ -189,10 +207,13 @@ function showTab(k){
   for(const b of document.querySelectorAll('.tabs button')) b.setAttribute('aria-selected', b.dataset.tab===k);
   document.getElementById('p-now').hidden = k!=='now';
   document.getElementById('p-done').hidden = k!=='done';
-  try{ history.replaceState(null,'', k==='done'?'#sdelano':location.pathname); }catch(e){}
+  document.getElementById('p-roles').hidden = k!=='roles';
+  const hs={done:'#sdelano',roles:'#kto'};
+  try{ history.replaceState(null,'', hs[k]||location.pathname); }catch(e){}
 }
 document.querySelectorAll('.tabs button').forEach(b=>b.addEventListener('click',()=>showTab(b.dataset.tab)));
 if(location.hash==='#sdelano') showTab('done');
+if(location.hash==='#kto') showTab('roles');
 function render(data){
   const u = new Date(data.updated);
   document.getElementById('upd').textContent = `Обновлено ${dm(u)}, ${hm(u)} (по Иркутску)`;
@@ -201,6 +222,11 @@ function render(data){
   if(D){ document.getElementById('done-h').textContent = D.title;
     document.getElementById('done').innerHTML = D.items.map(doneHTML).join(''); }
   else document.getElementById('t-done').hidden = true;
+  const R = data.roles;
+  if(R){ document.getElementById('roles').innerHTML =
+    `<div class="legend"><span><i style="background:var(--now)"></i>я</span><span><i style="background:var(--accent)"></i>ИИ</span></div>` +
+    R.chains.map(c=>`<div class="chain"><h3>${esc(c.title)}</h3><ul class="clist">${c.steps.map(s=>`<li class="${s.cls}"><span>${esc(s.name)}</span><span class="who">${esc(s.who)}</span></li>`).join('')}</ul></div>`).join(''); }
+  else document.getElementById('t-roles').hidden = true;
 }
 if(window.__DATA__) render(window.__DATA__);
 else fetch('tasks.json',{cache:'no-store'}).then(r=>r.json()).then(render)
