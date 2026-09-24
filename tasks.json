@@ -1,5 +1,5 @@
 {
-  "updated": "2026-09-25T05:09:01+08:00",
+  "updated": "2026-09-25T05:09:10+08:00",
   "tasks": [
     {
       "title": "Контент-план на октябрь",
@@ -99,11 +99,11 @@
         },
         {
           "name": "Тестовый пост",
-          "status": "now"
+          "status": "done"
         },
         {
           "name": "Работает",
-          "status": "todo"
+          "status": "now"
         }
       ],
       "note": "Настроена на 8 площадках: Instagram, TikTok, YouTube, ВКонтакте, Одноклассники, Telegram, MAX, Threads"
