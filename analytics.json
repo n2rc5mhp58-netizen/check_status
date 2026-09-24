@@ -1,23 +1,23 @@
 {
-  "updated": "2026-09-24T02:15:00+08:00",
+  "updated": "2026-09-24T11:25:00+08:00",
   "platforms": [
     {
       "name": "Instagram",
       "followers": 167,
-      "followers_prev": null,
+      "followers_prev": 167,
       "last": {
         "title": null,
         "date": "2026-09-23",
         "url": "https://www.instagram.com/reel/DdoDBoXs1un/",
-        "views": 3163,
-        "likes": 26,
+        "views": 3903,
+        "likes": 31,
         "comments": 0
       }
     },
     {
       "name": "TikTok",
-      "followers": null,
-      "note": "снимаем с завтрашнего утра"
+      "followers": 1,
+      "followers_prev": null
     },
     {
       "name": "YouTube",
@@ -25,9 +25,9 @@
       "followers_prev": null,
       "last": {
         "title": "5 вредных советов от друзей",
-        "date": null,
+        "date": "2026-09-23",
         "url": "https://www.youtube.com/shorts/8d7wNbmgWOo",
-        "views": 995,
+        "views": 1246,
         "likes": null,
         "comments": null
       }
@@ -35,12 +35,12 @@
     {
       "name": "ВКонтакте",
       "followers": 19,
-      "followers_prev": null
+      "followers_prev": 19
     },
     {
       "name": "Telegram",
-      "followers": null,
-      "note": "снимаем с завтрашнего утра"
+      "followers": 3,
+      "followers_prev": null
     }
   ]
 }
