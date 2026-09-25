@@ -1,41 +1,41 @@
 {
-  "updated": "2026-09-24T11:52:00+08:00",
+  "updated": "2026-09-25T13:07:00+08:00",
   "platforms": [
     {
       "name": "Instagram",
-      "followers": 167,
+      "followers": 168,
       "followers_prev": 167,
       "last": {
         "title": null,
         "date": "2026-09-23",
         "url": "https://www.instagram.com/reel/DdoDBoXs1un/",
-        "views": 3903,
-        "likes": 31,
+        "views": 4553,
+        "likes": 34,
         "comments": 0
       }
     },
     {
       "name": "TikTok",
-      "followers": 1,
-      "followers_prev": null,
+      "followers": 2,
+      "followers_prev": 1,
       "last": {
         "title": "Какой из этих советов давали вам?",
         "date": "2026-09-23",
         "url": "https://www.tiktok.com/@pravo.vybora/video/7688688435233606934",
-        "views": 421,
-        "likes": 9,
+        "views": 548,
+        "likes": 12,
         "comments": 0
       }
     },
     {
       "name": "YouTube",
       "followers": 1,
-      "followers_prev": null,
+      "followers_prev": 1,
       "last": {
         "title": "5 вредных советов от друзей",
         "date": "2026-09-23",
         "url": "https://www.youtube.com/shorts/8d7wNbmgWOo",
-        "views": 1246,
+        "views": 1248,
         "likes": null,
         "comments": null
       }
@@ -47,8 +47,8 @@
     },
     {
       "name": "Telegram",
-      "followers": 3,
-      "followers_prev": null
+      "followers": 4,
+      "followers_prev": 3
     }
   ]
 }
